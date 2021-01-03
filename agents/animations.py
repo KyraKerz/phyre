@@ -12,7 +12,7 @@ random.seed(0)
 def animateSimulatedTask(images):
     print(len(images))
     num_across = 5
-    task_img0 = images[52]
+    task_img0 = images
     # taskid = tasks[40]
     height = int(math.ceil(len(task_img0) / num_across))
     fig, axs = plt.subplots(height, num_across, figsize=(20, 15))

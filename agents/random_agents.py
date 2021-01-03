@@ -25,6 +25,7 @@ def evaluate_random_agent(tasks, tier):
     evaluator = phyre.Evaluator(tasks)
     assert tuple(tasks) == simulator.task_ids
     images = []
+    actions = []
     for task_index in tqdm_notebook(range(len(tasks)), desc='Evaluate tasks'):
         while evaluator.get_attempts_for_task(
                 task_index) < phyre.MAX_TEST_ATTEMPTS:
@@ -34,13 +35,15 @@ def evaluate_random_agent(tasks, tier):
             status = simulator.simulate_action(task_index,
                                                action,
                                                need_images=True)
+
             stati = status.status
+            actions.append(action)
             images.append(status.images)
             evaluator.maybe_log_attempt(task_index, stati)
-    return evaluator, images
+    return evaluator, images, actions
+print("hello")
 
-
-finish, images = evaluate_random_agent(tasks, action_tier)
+finish, images, actionlog = evaluate_random_agent(tasks, action_tier)
 finishlog = finish._log
 
 indices1 = [i for i, x in enumerate(images) if x is None]
@@ -48,22 +51,27 @@ indices1 = [i for i, x in enumerate(images) if x is None]
 
 for i in reversed(indices1):
     del images[i]
+    del actionlog[i]
     #del finishlog[i]
 #print(images)
 indices2 = [i for i, x in enumerate(images) if images[i].shape[0] != 17]
 for i in reversed(indices2):
     del images[i]
+    del actionlog[i]
     del finishlog[i]
+
 
 new_list = [ seq[1] for seq in finishlog ]
 
-
+print(len(images))
+print("actionlog:",len(actionlog))
 print(len(new_list))
 imagearray = np.asarray(images)
 print(imagearray.shape)
-np.save('Images.npy', images)
-np.save('Evaluation.npy', new_list)
+np.save('ImagesLog1.npy', images)
+np.save('EvaluationsLog1.npy', new_list)
+np.save('ActionLog1.npy1', actionlog)
 
 
 
-#animations.animateSimulatedTask(images)
+animations.animateSimulatedTask(images)
